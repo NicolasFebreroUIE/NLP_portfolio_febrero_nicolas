@@ -1,0 +1,57 @@
+from collections import Counter
+import re
+
+
+texto = "I am Sam Sam I am I do not like green eggs and ham"
+tokenized_corpus = re.findall(r'\b\w+\b', texto.lower())  
+print("Corpus:", tokenized_corpus)
+print()
+
+
+word_counts = {}
+for word in tokenized_corpus:
+    if word in word_counts:
+        word_counts[word] += 1
+    else:
+        word_counts[word] = 1
+
+print(" == Word counts == ")
+print(word_counts)
+print()
+
+bigram_counts = {}
+for i in range(len(tokenized_corpus) - 1):
+    bigram = (tokenized_corpus[i], tokenized_corpus[i + 1])
+    if bigram in bigram_counts:
+        bigram_counts[bigram] += 1
+    else:
+        bigram_counts[bigram] = 1
+
+print(" == Bigrams == ")
+print(bigram_counts)
+print()
+
+def bigram_prob_count(word1, word2):
+    bigram = (word1.lower(), word2.lower())
+    if word1.lower() in word_counts:
+        return bigram_counts.get(bigram, 0) / word_counts[word1.lower()]
+    return 0
+
+word_counts_counter = Counter(tokenized_corpus)
+
+print(" == Word counts con COUNTER == ")
+print(dict(word_counts_counter))
+print()
+
+
+print(f'P(am | I) = {bigram_prob_count("I", "am"):.10f}')    
+print(f'P(Sam | am) = {bigram_prob_count("am", "Sam"):.10f}')  
+
+
+# SHAKES TEXT TRY 
+
+with open("shakes.txt", "r", encoding="utf-8") as f:
+    word_counts = Counter(re.findall(r"[a-z']+", f.read().lower()))
+
+# I show all words, and the top 5
+print("Palabras más comunes:", word_counts.most_common(5))
